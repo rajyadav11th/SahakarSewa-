@@ -1,0 +1,76 @@
+<%- include('partials/header') %>
+
+<div class="auth-wrapper">
+  <div class="auth-box" style="text-align:center;">
+    <div class="logo">Coop<span style="color:#2e7d32">Seva</span></div>
+    <h2>Confirm Subscription</h2>
+    <p class="subtitle"><%= planDetails.label %></p>
+
+    <h1 style="color:#2e7d32;margin:20px 0;">
+      <% if (planDetails.price === 0) { %>
+        FREE
+      <% } else { %>
+        ₹<%= planDetails.price %>
+      <% } %>
+    </h1>
+
+    <p style="font-size:13px;color:#777;margin-bottom:20px;">
+      Valid for <%= planDetails.months %> month<%= planDetails.months > 1 ? 's' : '' %>
+    </p>
+
+    <% if (plan === 'free') { %>
+        <form action="/activate-free" method="POST">
+            <button type="submit" class="btn primary-btn full-btn">Activate Free Plan</button>
+        </form>
+    <% } else { %>
+        <button id="subPayBtn" class="btn primary-btn full-btn">Pay ₹<%= planDetails.price %> & Activate</button>
+    <% } %>
+
+    <a href="/subscription" style="display:block;margin-top:14px;font-size:13px;color:#777;">← Back to plans</a>
+  </div>
+</div>
+
+<% if (plan !== 'free') { %>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+  document.getElementById('subPayBtn').addEventListener('click', function () {
+    const options = {
+      key: "<%= key_id %>",
+      amount: "<%= order.amount %>",
+      currency: "INR",
+      name: "CoopSeva",
+      description: "<%= planDetails.label %> subscription",
+      order_id: "<%= order.id %>",
+      handler: function (response) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/verify-subscription';
+
+        const fields = {
+          razorpay_order_id: response.razorpay_order_id,
+          razorpay_payment_id: response.razorpay_payment_id,
+          razorpay_signature: response.razorpay_signature,
+          plan: "<%= plan %>"
+        };
+
+        for (const key in fields) {
+          const input = document.createElement('input');
+          input.type = 'hidden';
+          input.name = key;
+          input.value = fields[key];
+          form.appendChild(input);
+        }
+
+        document.body.appendChild(form);
+        form.submit();
+      },
+      theme: { color: "#2e7d32" }
+    };
+
+    const rzp = new Razorpay(options);
+    rzp.open();
+  });
+</script>
+<% } %>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,56 @@
+<%- include('partials/header') %>
+
+<header class="navbar">
+    <div class="nav-container">
+        <div class="logo">Coop<span>Seva</span> Admin</div>
+        <nav id="navLinks"><a href="/admin/kyc-requests">Back to List</a></nav>
+    </div>
+</header>
+
+<section class="section" style="max-width:700px;">
+
+    <div class="worker-card" style="text-align:left;">
+        <h2><%= kyc.worker.name %></h2>
+        <p style="color:#777;"><%= kyc.worker.email %> • <%= kyc.worker.phone %></p>
+
+        <hr style="margin:16px 0;border:none;border-top:1px solid #eee;">
+
+        <p><strong>Profession:</strong> <%= kyc.profession %></p>
+        <p><strong>Experience:</strong> <%= kyc.experience %> years</p>
+        <p><strong>Minimum Fee:</strong> ₹<%= kyc.minimumFee %></p>
+
+        <p style="margin-top:12px;"><strong>Address:</strong></p>
+        <p style="color:#666;">
+            <%= kyc.address.houseNumber %> <%= kyc.address.street %>,
+            <%= kyc.address.city %>, <%= kyc.address.district %>,
+            <%= kyc.address.state %> - <%= kyc.address.pincode %>
+        </p>
+
+        <p style="margin-top:12px;"><strong>Profile Image:</strong></p>
+        <img src="<%= kyc.profileImage %>" style="width:120px;height:120px;object-fit:cover;border-radius:8px;margin-top:6px;">
+
+        <p style="margin-top:12px;"><strong>Aadhaar Card:</strong></p>
+        <img src="<%= kyc.aadharCard %>" style="width:100%;max-width:300px;border-radius:8px;margin-top:6px;">
+
+        <% if (kyc.certificates && kyc.certificates.length > 0) { %>
+            <p style="margin-top:12px;"><strong>Certificates:</strong></p>
+            <% kyc.certificates.forEach(cert => { %>
+                <a href="<%= cert %>" target="_blank" style="display:block;color:#2e7d32;margin-top:4px;">View Certificate</a>
+            <% }) %>
+        <% } %>
+
+        <div style="display:flex;gap:10px;margin-top:24px;">
+            <form action="/admin/kyc/<%= kyc._id %>/approve" method="POST" style="flex:1;">
+                <button type="submit" class="btn primary-btn full-btn">✅ Approve</button>
+            </form>
+        </div>
+
+        <form action="/admin/kyc/<%= kyc._id %>/reject" method="POST" style="margin-top:10px;">
+            <textarea name="reason" placeholder="Rejection reason (customer/worker ko dikhega)" rows="2" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:8px;margin-bottom:10px;" required></textarea>
+            <button type="submit" class="btn login-btn full-btn">❌ Reject</button>
+        </form>
+    </div>
+
+</section>
+
+<%- include('partials/footer') %>

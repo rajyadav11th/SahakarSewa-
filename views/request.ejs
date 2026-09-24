@@ -1,0 +1,25 @@
+<%- include('partials/header') %>
+
+<div class="auth-wrapper">
+  <div class="auth-box">
+    <div class="logo">Coop<span style="color:#2e7d32">Seva</span></div>
+    <h2>Send Request</h2>
+    <p class="subtitle">Requesting <%= worker.name %> (<%= worker.skill %>)</p>
+
+    <% if (error) { %>
+      <p class="error"><%= error %></p>
+    <% } %>
+
+    <form action="/request/<%= worker._id %>" method="POST">
+      <label style="font-size:13px;color:#555;">Your Address</label>
+      <textarea name="address" rows="3" required style="width:100%;padding:12px;border:1px solid #ddd;border-radius:8px;margin-bottom:14px;" placeholder="Poora address likho, jahan worker aayega"></textarea>
+
+      <label style="font-size:13px;color:#555;">Notes (optional)</label>
+      <textarea name="notes" rows="2" style="width:100%;padding:12px;border:1px solid #ddd;border-radius:8px;margin-bottom:14px;" placeholder="Kaam ke baare mein kuch batana ho to"></textarea>
+
+      <button type="submit" class="btn primary-btn">Send Request</button>
+    </form>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

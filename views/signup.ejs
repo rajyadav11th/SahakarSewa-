@@ -1,0 +1,61 @@
+<%- include('partials/header') %>
+
+<div class="auth-wrapper">
+  <div class="auth-box">
+    <div class="logo">Coop<span style="color:#2e7d32">Seva</span></div>
+    <h2>Create Account</h2>
+    <p class="subtitle">Join the CoopSeva community</p>
+
+    <% if (error) { %>
+      <p class="error"><%= error %></p>
+    <% } %>
+
+   <form action="/signup" method="POST" enctype="multipart/form-data">
+      <input type="text" name="name" placeholder="Full Name" required>
+      <input type="email" name="email" placeholder="Email" required>
+      <input type="tel" name="phone" placeholder="Phone Number" required>
+
+      <select name="role" id="roleSelect">
+        <option value="customer">Customer</option>
+        <option value="worker">Service Worker</option>
+      </select>
+
+      <!-- Worker-only fields, JS se show/hide honge -->
+      <div id="workerFields" style="display:none;">
+        <select name="skill">
+          <option value="">Select your service</option>
+          <option value="electrician">Electrician</option>
+          <option value="plumber">Plumber</option>
+          <option value="carpenter">Carpenter</option>
+          <option value="cleaner">Cleaner</option>
+          <option value="painter">Painter</option>
+          <option value="gardener">Gardener</option>
+        </select>
+
+        <input type="number" name="experience" placeholder="Experience (in years)">
+      <label style="font-size:13px;color:#555;">Address</label>
+<input type="text" name="address" id="addressInput" placeholder="Address will appear here" required readonly style="background:#f4f4f4;">
+
+<label style="font-size:13px;color:#555;">Pincode</label>
+<input type="text" name="pincode" id="pincodeInput" placeholder="Pincode will appear here" required readonly style="background:#f4f4f4;">
+
+<input type="hidden" name="latitude" id="latitudeInput">
+<input type="hidden" name="longitude" id="longitudeInput">
+
+<button type="button" onclick="openMapModal('signup')" class="btn secondary-btn" style="width:100%;margin-bottom:14px;">
+  🗺️ Set Location on Map
+</button>
+        <input type="number" name="hourlyRate" placeholder="Hourly rate (₹)">
+        <input type="file" name="photo" accept="image/*">
+        <textarea name="bio" placeholder="Short bio (optional)" rows="3" style="width:100%;padding:12px;border:1px solid #ddd;border-radius:8px;margin-bottom:14px;"></textarea>
+      </div>
+
+      <input type="password" name="password" placeholder="Password" required>
+      <button type="submit" class="btn primary-btn">Create Account</button>
+    </form>
+
+    <p class="switch-link">Already have an account? <a href="/signin">Sign In</a></p>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

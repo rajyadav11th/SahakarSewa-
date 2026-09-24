@@ -1,0 +1,63 @@
+<%- include('partials/header') %>
+
+<header class="navbar">
+    <div class="nav-container">
+        <div class="logo">Coop<span>Seva</span></div>
+        <nav id="navLinks">
+            <a href="/">Home</a>
+        </nav>
+    </div>
+</header>
+
+<section class="section" style="max-width:700px;">
+
+    <div class="worker-card" style="text-align:center;padding:30px;">
+
+        <% if (worker.photo) { %>
+            <img src="<%= worker.photo %>" alt="<%= worker.name %>" class="worker-avatar" style="width:100px;height:100px;object-fit:cover;margin:0 auto 16px;">
+        <% } else { %>
+            <div class="worker-avatar" style="width:100px;height:100px;font-size:36px;margin:0 auto 16px;"><%= worker.name.charAt(0) %></div>
+        <% } %>
+
+        <h2 style="margin-bottom:4px;"><%= worker.name %></h2>
+        <p style="color:#2e7d32;font-weight:600;text-transform:capitalize;margin-bottom:8px;"><%= worker.skill %> • <%= worker.experience %> yrs experience</p>
+
+        <% if (avgRating) { %>
+            <p style="color:#f5a623;font-size:16px;margin-bottom:12px;">⭐ <%= avgRating %> <span style="color:#777;font-size:13px;">(<%= ratingCount %> reviews)</span></p>
+        <% } else { %>
+            <p style="color:#999;font-size:13px;margin-bottom:12px;">No ratings yet</p>
+        <% } %>
+
+        <p style="color:#777;font-size:14px;margin-bottom:6px;">📍 <%= worker.location?.address || 'Location not set' %></p>
+        <p style="color:#2e7d32;font-weight:700;font-size:18px;margin-bottom:16px;">₹<%= worker.hourlyRate %>/hr</p>
+
+        <% if (worker.bio) { %>
+            <p style="color:#666;font-size:14px;margin-bottom:20px;"><%= worker.bio %></p>
+        <% } %>
+
+        <a href="/request/<%= worker._id %>" class="btn primary-btn full-btn">Send Request</a>
+    </div>
+
+    <div style="margin-top:30px;">
+        <h3 style="margin-bottom:16px;">Reviews (<%= ratingCount %>)</h3>
+
+        <% if (reviews.length === 0) { %>
+            <p style="color:#777;text-align:center;">Abhi tak koi review nahi hai.</p>
+        <% } %>
+
+        <% reviews.forEach(r => { %>
+            <div class="worker-card" style="text-align:left;margin-bottom:14px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <strong><%= r.customer.name %></strong>
+                    <span style="color:#f5a623;"><%= '⭐'.repeat(r.rating) %></span>
+                </div>
+                <% if (r.review) { %>
+                    <p style="color:#666;font-size:14px;margin-top:8px;"><%= r.review %></p>
+                <% } %>
+            </div>
+        <% }) %>
+    </div>
+
+</section>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,87 @@
+<%- include('partials/header') %>
+
+<header class="navbar">
+    <div class="nav-container">
+        <div class="logo">Coop<span>Seva</span></div>
+        <nav id="navLinks">
+            <a href="/dashboard">Dashboard</a>
+        </nav>
+    </div>
+</header>
+
+<section class="section">
+    <div class="center-title">
+        <small>INCOMING REQUESTS</small>
+        <h2>Customer Requests</h2>
+        <p><%= bookings.length %> request(s)</p>
+    </div>
+
+    <div class="workers-grid">
+        <% if (bookings.length === 0) { %>
+            <p style="text-align:center; grid-column: 1/-1; color:#777;">
+                Abhi tak koi request nahi aayi.
+            </p>
+        <% } %>
+
+        <% bookings.forEach(b => { %>
+            <div class="worker-card" style="text-align:left;">
+                <h3><%= b.customer.name %></h3>
+                <div class="worker-skill"><%= b.skill %> service</div>
+                <% if (b.notes) { %>
+                    <p style="font-size:12px;color:#999;margin:8px 0;"><%= b.notes %></p>
+                <% } %>
+
+                <p style="margin-top:10px;">
+                    Status:
+                    <span style="
+                        padding:3px 10px;
+                        border-radius:10px;
+                        font-size:12px;
+                        font-weight:600;
+                        <% if (b.status === 'pending') { %> background:#fff3cd;color:#856404;
+                        <% } else if (b.status === 'accepted') { %> background:#d4edda;color:#155724;
+                        <% } else if (b.status === 'rejected') { %> background:#f8d7da;color:#721c24;
+                        <% } else if (b.status === 'confirmed') { %> background:#e2d9f3;color:#5a3d8a;
+                        <% } else if (b.status === 'paid') { %> background:#cce5ff;color:#004085;
+                        <% } else if (b.status === 'completed') { %> background:#d1f2eb;color:#0e6655;
+                        <% } %>
+                    "><%= b.status %></span>
+                </p>
+
+                <% if (b.status === 'pending') { %>
+                    <div style="display:flex;gap:10px;margin-top:12px;">
+                        <form action="/accept/<%= b._id %>" method="POST" style="flex:1;">
+                            <button type="submit" class="btn primary-btn full-btn">Accept</button>
+                        </form>
+                        <form action="/reject/<%= b._id %>" method="POST" style="flex:1;">
+                            <button type="submit" class="btn login-btn full-btn">Reject</button>
+                        </form>
+                    </div>
+                <% } %>
+
+                <% if (b.status === 'paid' || b.status === 'confirmed' || b.status === 'completed') { %>
+                    <div style="margin-top:12px;font-size:13px;background:#e8f5e9;padding:10px;border-radius:8px;">
+                        <p style="margin:0 0 6px;">📍 <strong>Address:</strong> <%= b.address %></p>
+                        <p style="margin:0 0 6px;">📞 <strong>Phone:</strong> <%= b.customer.phone %></p>
+                        <p style="margin:0;">
+                          💰 <strong>Payment:</strong>
+                          <% if (b.paymentMethod === 'cod') { %>
+                            Cash to collect (COD) <%= b.status === 'confirmed' ? '— pending' : '— done' %>
+                          <% } else { %>
+                            ✅ Paid Online
+                          <% } %>
+                        </p>
+                    </div>
+
+                    <% if (b.status === 'paid' || b.status === 'confirmed') { %>
+                        <form action="/mark-complete/<%= b._id %>" method="POST" style="margin-top:10px;">
+                            <button type="submit" class="btn primary-btn full-btn">✅ Mark Job Complete</button>
+                        </form>
+                    <% } %>
+                <% } %>
+            </div>
+        <% }) %>
+    </div>
+</section>
+
+<%- include('partials/footer') %>

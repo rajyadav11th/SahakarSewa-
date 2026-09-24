@@ -1,0 +1,61 @@
+<%- include('partials/header') %>
+
+<div class="auth-wrapper">
+  <div class="auth-box" style="text-align:center;">
+    <div class="logo">Coop<span style="color:#2e7d32">Seva</span></div>
+    <h2>Complete Payment</h2>
+    <p class="subtitle">Paying <%= booking.worker.name %> for <%= booking.skill %> service</p>
+
+    <h1 style="color:#2e7d32;margin:20px 0;">₹<%= booking.amount %></h1>
+
+    <button id="payBtn" class="btn primary-btn full-btn" style="margin-bottom:12px;">Pay Online Now (UPI/Card)</button>
+
+    <form action="/confirm-cod" method="POST">
+      <input type="hidden" name="bookingId" value="<%= booking._id %>">
+      <button type="submit" class="btn secondary-btn full-btn">💵 Cash on Delivery</button>
+    </form>
+  </div>
+</div>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+  document.getElementById('payBtn').addEventListener('click', function () {
+    const options = {
+      key: "<%= key_id %>",
+      amount: "<%= order.amount %>",
+      currency: "INR",
+      name: "CoopSeva",
+      description: "<%= booking.skill %> service payment",
+      order_id: "<%= order.id %>",
+      handler: function (response) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/verify-payment';
+
+        const fields = {
+          razorpay_order_id: response.razorpay_order_id,
+          razorpay_payment_id: response.razorpay_payment_id,
+          razorpay_signature: response.razorpay_signature,
+          bookingId: "<%= booking._id %>"
+        };
+
+        for (const key in fields) {
+          const input = document.createElement('input');
+          input.type = 'hidden';
+          input.name = key;
+          input.value = fields[key];
+          form.appendChild(input);
+        }
+
+        document.body.appendChild(form);
+        form.submit();
+      },
+      theme: { color: "#2e7d32" }
+    };
+
+    const rzp = new Razorpay(options);
+    rzp.open();
+  });
+</script>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,89 @@
+<%- include('partials/header') %>
+
+<header class="navbar">
+    <div class="nav-container">
+        <div class="logo">Coop<span>Seva</span></div>
+        <nav id="navLinks">
+            <a href="/">Home</a>
+        </nav>
+    </div>
+</header>
+
+<section class="section">
+    <div class="center-title">
+        <small>SEARCH RESULTS</small>
+        <h2 style="text-transform:capitalize;"><%= skill %>s Near You</h2>
+        <p>
+          <%= workers.length %> verified worker(s) found
+          <% if (area) { %> near "<%= area %>"<% } %>
+          <% if (lat && lng && !area) { %> within <%= radius %>km<% } %>
+        </p>
+    </div>
+
+    <div class="search-box" style="margin-bottom:30px;">
+      <form method="GET" action="/workers/<%= skill %>" style="display:flex;gap:12px;flex-wrap:wrap;align-items:end;">
+
+        <input type="hidden" name="lat" value="<%= lat || '' %>">
+        <input type="hidden" name="lng" value="<%= lng || '' %>">
+
+        <div class="input-box" style="flex:1;min-width:180px;">
+          <label>Search by area name</label>
+          <input type="text" name="area" value="<%= area || '' %>" placeholder="e.g. Andheri, Bandra">
+        </div>
+
+        <% if (lat && lng) { %>
+          <div class="input-box" style="min-width:140px;">
+            <label>Radius</label>
+            <select name="radius">
+              <option value="5" <%= radius == 5 ? 'selected' : '' %>>5 km</option>
+              <option value="10" <%= radius == 10 ? 'selected' : '' %>>10 km</option>
+              <option value="20" <%= radius == 20 ? 'selected' : '' %>>20 km</option>
+              <option value="50" <%= radius == 50 ? 'selected' : '' %>>50 km</option>
+              <option value="100" <%= radius == 100 ? 'selected' : '' %>>100 km</option>
+            </select>
+          </div>
+        <% } %>
+
+        <button type="submit" class="btn primary-btn">Filter</button>
+      </form>
+    </div>
+
+    <div class="workers-grid">
+        <% if (workers.length === 0) { %>
+            <p style="text-align:center; grid-column: 1/-1; color:#777;">
+                Abhi is service ke koi worker available nahi hain.
+            </p>
+        <% } %>
+
+        <% workers.forEach(w => { %>
+            <div class="worker-card">
+
+                <% if (w.photo) { %>
+                    <img src="<%= w.photo %>" alt="<%= w.name %>" class="worker-avatar" style="object-fit:cover;">
+                <% } else { %>
+                    <div class="worker-avatar"><%= w.name.charAt(0) %></div>
+                <% } %>
+
+                <h3><a href="/worker-profile/<%= w._id %>" style="color:inherit;text-decoration:none;"><%= w.name %></a></h3>
+                <div class="worker-skill"><%= w.skill %> • <%= w.experience %> yrs exp</div>
+
+                <% if (w.avgRating) { %>
+                    <p style="color:#f5a623;font-size:13px;margin:4px 0;">⭐ <%= w.avgRating %> (<%= w.ratingCount %> reviews)</p>
+                <% } else { %>
+                    <p style="color:#999;font-size:12px;margin:4px 0;">No ratings yet</p>
+                <% } %>
+
+                <p style="color:#777; font-size:13px; margin:8px 0;"><%= w.location?.address || '' %></p>
+                <p style="color:#2e7d32; font-weight:700;">₹<%= w.hourlyRate %>/hr</p>
+                <% if (w.bio) { %>
+                    <p style="font-size:12px; color:#999; margin-top:8px;"><%= w.bio %></p>
+                <% } %>
+
+                <a href="/request/<%= w._id %>" class="btn primary-btn full-btn" style="margin-top:12px;display:block;text-align:center;">Send Request</a>
+
+            </div>
+        <% }) %>
+    </div>
+</section>
+
+<%- include('partials/footer') %>

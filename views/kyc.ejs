@@ -1,0 +1,161 @@
+<%- include('partials/header') %>
+
+<header class="navbar">
+    <div class="nav-container">
+        <div class="logo">Coop<span>Seva</span></div>
+        <nav id="navLinks"><a href="/dashboard">Dashboard</a></nav>
+        <div class="nav-buttons">
+            <a href="/logout" class="btn login-btn">Logout</a>
+        </div>
+    </div>
+</header>
+
+<section class="section" style="max-width:700px;">
+
+    <div class="center-title">
+        <small>WORKER VERIFICATION</small>
+        <h2>Complete Your KYC</h2>
+        <p>Provide your professional and verification details</p>
+    </div>
+
+    <% if (existingKyc) { %>
+
+        <div class="kyc-section kyc-status-card">
+            <% if (existingKyc.status === 'pending') { %>
+                <div class="icon">⏳</div>
+                <h3>KYC Under Review</h3>
+                <p style="color:#777;margin-top:6px;">Aapki KYC verify ho rahi hai. Approve hote hi aap customers ko dikhne lagenge.</p>
+            <% } else if (existingKyc.status === 'rejected') { %>
+                <div class="icon">❌</div>
+                <h3 style="color:#c0392b;">KYC Rejected</h3>
+                <p style="color:#777;margin-top:6px;">Reason: <%= existingKyc.rejectionReason || 'Not specified' %></p>
+                <p style="color:#777;margin-top:6px;">Please correct the details and resubmit below.</p>
+            <% } %>
+        </div>
+
+    <% } %>
+
+    <% if (!existingKyc || existingKyc.status === 'rejected') { %>
+
+        <% if (error) { %>
+            <p class="error"><%= error %></p>
+        <% } %>
+
+        <form action="/kyc" method="POST" enctype="multipart/form-data">
+
+            <div class="kyc-section">
+                <div class="kyc-section-heading">
+                    <div class="kyc-section-number">01</div>
+                    <div>
+                        <h3>Professional Details</h3>
+                        <p>Tell us about your professional experience</p>
+                    </div>
+                </div>
+
+                <label>Profession *</label>
+                <input type="text" name="profession" placeholder="Example: Electrician" required>
+
+                <label>Experience (years) *</label>
+                <input type="number" name="experience" min="0" required>
+
+                <label>Minimum Service Fee (₹) *</label>
+                <input type="number" name="minimumFee" min="0" required>
+            </div>
+
+            <div class="kyc-section">
+                <div class="kyc-section-heading">
+                    <div class="kyc-section-number">02</div>
+                    <div>
+                        <h3>Address Details</h3>
+                        <p>Provide your current service location</p>
+                    </div>
+                </div>
+
+                <label>House / Building Number</label>
+                <input type="text" name="houseNumber">
+
+                <label>Street / Area</label>
+                <input type="text" name="street">
+
+                <label>City *</label>
+                <input type="text" name="city" required>
+
+                <label>District</label>
+                <input type="text" name="district">
+
+                <label>State *</label>
+                <input type="text" name="state" required>
+
+                <label>Pincode *</label>
+                <input type="text" name="pincode" required>
+            </div>
+
+            <div class="kyc-section">
+                <div class="kyc-section-heading">
+                    <div class="kyc-section-number">03</div>
+                    <div>
+                        <h3>Current Location</h3>
+                        <p>Helps customers find you nearby</p>
+                    </div>
+                </div>
+
+                <input type="hidden" name="latitude" id="kycLatInput">
+                <input type="hidden" name="longitude" id="kycLngInput">
+
+                <div class="kyc-location-box">
+                    <p id="kycLocationText">📍 Location not selected</p>
+                    <button type="button" id="getKycLocation" class="btn secondary-btn">Use Current Location</button>
+                </div>
+            </div>
+
+            <div class="kyc-section">
+                <div class="kyc-section-heading">
+                    <div class="kyc-section-number">04</div>
+                    <div>
+                        <h3>Profile Image *</h3>
+                        <p>Upload a clear professional photo</p>
+                    </div>
+                </div>
+
+                <div class="kyc-file-box">
+                    <input type="file" name="profileImage" accept="image/*" required>
+                </div>
+            </div>
+
+            <div class="kyc-section">
+                <div class="kyc-section-heading">
+                    <div class="kyc-section-number">05</div>
+                    <div>
+                        <h3>Aadhaar Card *</h3>
+                        <p>Upload a clear image of your Aadhaar</p>
+                    </div>
+                </div>
+
+                <div class="kyc-file-box">
+                    <input type="file" name="aadharCard" accept="image/*" required>
+                </div>
+            </div>
+
+            <div class="kyc-section">
+                <div class="kyc-section-heading">
+                    <div class="kyc-section-number">06</div>
+                    <div>
+                        <h3>Professional Certificates</h3>
+                        <p>Optional — upload if available</p>
+                    </div>
+                </div>
+
+                <div class="kyc-file-box">
+                    <input type="file" name="certificates" accept="image/*,.pdf" multiple>
+                </div>
+            </div>
+
+            <button type="submit" class="btn primary-btn full-btn" style="padding:14px;font-size:15px;">Submit KYC</button>
+
+        </form>
+
+    <% } %>
+
+</section>
+
+<%- include('partials/footer') %>

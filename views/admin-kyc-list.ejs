@@ -1,0 +1,35 @@
+<%- include('partials/header') %>
+
+<header class="navbar">
+    <div class="nav-container">
+        <div class="logo">Coop<span>Seva</span> Admin</div>
+        <div class="nav-buttons">
+            <a href="/admin/logout" class="btn login-btn">Logout</a>
+        </div>
+    </div>
+</header>
+
+<section class="section">
+    <div class="center-title">
+        <small>ADMIN PANEL</small>
+        <h2>Pending KYC Requests</h2>
+        <p><%= kycRequests.length %> request(s) waiting</p>
+    </div>
+
+    <div class="workers-grid">
+        <% if (kycRequests.length === 0) { %>
+            <p style="text-align:center; grid-column: 1/-1; color:#777;">Koi pending KYC nahi hai.</p>
+        <% } %>
+
+        <% kycRequests.forEach(k => { %>
+            <div class="worker-card" style="text-align:left;">
+                <h3><%= k.worker.name %></h3>
+                <p style="font-size:13px;color:#777;"><%= k.profession %> • <%= k.experience %> yrs</p>
+                <p style="font-size:13px;color:#777;"><%= k.address.city %>, <%= k.address.state %></p>
+                <a href="/admin/kyc/<%= k._id %>" class="btn primary-btn full-btn" style="margin-top:12px;display:block;text-align:center;">Review Details</a>
+            </div>
+        <% }) %>
+    </div>
+</section>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,71 @@
+<%- include('partials/header') %>
+
+<header class="navbar">
+    <div class="nav-container">
+        <div class="logo">Coop<span>Seva</span></div>
+        <nav id="navLinks"><a href="/dashboard">Dashboard</a></nav>
+    </div>
+</header>
+
+<section class="section" style="max-width:600px;">
+    <div class="center-title">
+        <small>SUBSCRIPTION</small>
+        <h2>Your Plan</h2>
+    </div>
+
+    <% if (error) { %>
+        <p class="error" style="text-align:center;"><%= error %></p>
+    <% } %>
+
+    <% if (currentSub) { %>
+        <div class="worker-card" style="text-align:left;margin-bottom:24px;">
+            <p><strong>Current Plan:</strong> <%= currentSub.plan %></p>
+            <p><strong>Valid Until:</strong> <%= new Date(currentSub.endDate).toDateString() %></p>
+            <p>
+                <strong>Status:</strong>
+                <% if (new Date(currentSub.endDate) > new Date()) { %>
+                    <span style="color:#2e7d32;">✅ Active</span>
+                <% } else { %>
+                    <span style="color:#c0392b;">❌ Expired — please renew</span>
+                <% } %>
+            </p>
+        </div>
+    <% } else { %>
+        <p style="text-align:center;color:#777;margin-bottom:20px;">Abhi koi active subscription nahi hai.</p>
+    <% } %>
+
+    <h3 style="margin-bottom:16px;">Choose a Plan</h3>
+
+    <div class="workers-grid">
+
+        <% if (!usedFree) { %>
+            <div class="worker-card">
+                <h3>Free Plan</h3>
+                <p style="color:#2e7d32;font-weight:700;font-size:20px;">₹0</p>
+                <p style="font-size:12px;color:#999;margin-bottom:10px;">One-time only, 1 month</p>
+                <a href="/subscription-pay/free" class="btn primary-btn full-btn" style="display:block;text-align:center;">Activate Free</a>
+            </div>
+        <% } %>
+
+        <div class="worker-card">
+            <h3>1 Month</h3>
+            <p style="color:#2e7d32;font-weight:700;font-size:20px;">₹<%= plans['1month'].price %></p>
+            <a href="/subscription-pay/1month" class="btn primary-btn full-btn" style="display:block;text-align:center;">Choose</a>
+        </div>
+
+        <div class="worker-card">
+            <h3>2 Months</h3>
+            <p style="color:#2e7d32;font-weight:700;font-size:20px;">₹<%= plans['2month'].price %></p>
+            <a href="/subscription-pay/2month" class="btn primary-btn full-btn" style="display:block;text-align:center;">Choose</a>
+        </div>
+
+        <div class="worker-card">
+            <h3>6 Months</h3>
+            <p style="color:#2e7d32;font-weight:700;font-size:20px;">₹<%= plans['6month'].price %></p>
+            <a href="/subscription-pay/6month" class="btn primary-btn full-btn" style="display:block;text-align:center;">Choose</a>
+        </div>
+
+    </div>
+</section>
+
+<%- include('partials/footer') %>

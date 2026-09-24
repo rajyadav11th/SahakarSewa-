@@ -1,0 +1,90 @@
+<%- include('partials/header') %>
+
+<header class="navbar">
+    <div class="nav-container">
+        <div class="logo">Coop<span>Seva</span></div>
+        <nav id="navLinks">
+            <a href="/dashboard">Dashboard</a>
+        </nav>
+    </div>
+</header>
+
+<section class="section">
+    <div class="center-title">
+        <small>YOUR REQUESTS</small>
+        <h2>My Bookings</h2>
+        <p><%= bookings.length %> booking(s)</p>
+    </div>
+
+    <div class="workers-grid">
+        <% if (bookings.length === 0) { %>
+            <p style="text-align:center; grid-column: 1/-1; color:#777;">
+                Abhi tak koi booking nahi ki hai.
+            </p>
+        <% } %>
+
+        <% bookings.forEach(b => { %>
+            <div class="worker-card" style="text-align:left;">
+                <h3><%= b.worker.name %></h3>
+                <div class="worker-skill"><%= b.skill %></div>
+                <p style="font-size:13px;color:#777;margin:8px 0;">📍 <%= b.address %></p>
+                <% if (b.notes) { %>
+                    <p style="font-size:12px;color:#999;"><%= b.notes %></p>
+                <% } %>
+
+                <p style="margin-top:10px;">
+                    Status:
+                    <span style="
+                        padding:3px 10px;
+                        border-radius:10px;
+                        font-size:12px;
+                        font-weight:600;
+                        <% if (b.status === 'pending') { %> background:#fff3cd;color:#856404; 
+                        <% } else if (b.status === 'accepted') { %> background:#d4edda;color:#155724;
+                        <% } else if (b.status === 'rejected') { %> background:#f8d7da;color:#721c24;
+                        <% } else if (b.status === 'confirmed') { %> background:#e2d9f3;color:#5a3d8a;
+                        <% } else if (b.status === 'paid') { %> background:#cce5ff;color:#004085;
+                        <% } else if (b.status === 'completed') { %> background:#d1f2eb;color:#0e6655;
+                        <% } %>
+                    "><%= b.status %></span>
+                </p>
+
+                <% if (b.status === 'accepted') { %>
+                    <a href="/pay/<%= b._id %>" class="btn primary-btn full-btn" style="margin-top:12px;display:block;text-align:center;">Pay ₹<%= b.amount %></a>
+                <% } %>
+
+                <% if (b.status === 'completed' && !b.rating) { %>
+                    <div style="margin-top:14px;padding:14px;background:#d1f2eb;border-radius:8px;">
+                        <p style="margin:0 0 10px;font-weight:600;color:#0e6655;">✅ Job completed! Rate your experience</p>
+
+                        <form action="/submit-rating" method="POST">
+                            <input type="hidden" name="bookingId" value="<%= b._id %>">
+
+                            <div style="display:flex;gap:6px;margin-bottom:10px;">
+                                <% for (let i = 1; i <= 5; i++) { %>
+                                    <label style="cursor:pointer;font-size:22px;">
+                                        <input type="radio" name="rating" value="<%= i %>" style="display:none;" required>
+                                        ⭐
+                                    </label>
+                                <% } %>
+                            </div>
+
+                            <textarea name="review" rows="2" placeholder="Kaisa raha experience? (optional)" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:8px;margin-bottom:10px;"></textarea>
+
+                            <button type="submit" class="btn primary-btn full-btn">Submit Rating</button>
+                        </form>
+                    </div>
+                <% } %>
+
+                <% if (b.status === 'completed' && b.rating) { %>
+                    <div style="margin-top:14px;padding:10px;background:#f4f4f4;border-radius:8px;font-size:13px;">
+                        <strong>Your rating:</strong> <%= '⭐'.repeat(b.rating) %>
+                        <% if (b.review) { %><p style="margin:6px 0 0;color:#666;"><%= b.review %></p><% } %>
+                    </div>
+                <% } %>
+            </div>
+        <% }) %>
+    </div>
+</section>
+
+<%- include('partials/footer') %>
