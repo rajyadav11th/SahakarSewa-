@@ -1,4 +1,4 @@
-# SahakarSewa 🤝
+# ShakarSewa — CoopSewa 🤝
 
 An Express-MVC based **Cooperative Gig Services Platform for Household & Community Services**. this platform empowers Labour Cooperative Federations to securely onboard workers, manage verified digital marketplace bookings, and handle secure payments under a cooperative framework.
 
